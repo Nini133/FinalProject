@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ბიბლიოთეკა</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;700&family=Noto+Serif+Georgian:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf1df;--card:#fffaf1;--ink:#2d2142;--mute:#7a6f8a;--line:#ecdcc2;
+  --brand:#cf5f08;--brand-ink:#fff;--purple:#6d3fc0;--ok:#1f8a5b;--warn:#b57a00;--bad:#c8423c;
+  --soft:#f6e8cf;--shadow:0 1px 2px rgba(45,33,66,.06),0 8px 24px rgba(45,33,66,.07);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1b1330;--card:#261b3f;--ink:#f8ecd8;--mute:#b3a6c9;--line:#38294f;--soft:#30234a;
+  --brand:#ff9a45;--brand-ink:#2b1500;--purple:#b79bff;--ok:#45c48a;--warn:#e3b341;--bad:#ff7a73;--shadow:none;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 "Noto Sans Georgian",system-ui,sans-serif}
+h1,h2,h3{font-family:"Noto Serif Georgian",Georgia,serif;margin:0;line-height:1.25}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+[hidden]{display:none!important}
+
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.bar{display:flex;align-items:center;gap:18px;min-height:64px;flex-wrap:wrap}
+.logo{font:700 20px "Noto Serif Georgian",serif;display:flex;align-items:center;gap:10px;margin-right:auto}
+.logo i{width:26px;height:26px;border-radius:6px 6px 6px 2px;background:linear-gradient(90deg,var(--brand) 0 30%,transparent 30%),var(--purple);display:inline-block}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:none;border:0;padding:8px 14px;border-radius:8px;cursor:pointer;color:var(--mute);font-weight:500}
+nav button:hover{background:var(--soft)}
+nav button.on{color:var(--ink);background:var(--soft);box-shadow:inset 0 -2px 0 var(--brand)}
+.who{display:flex;align-items:center;gap:10px;color:var(--mute)}
+
+.btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;padding:9px 16px;cursor:pointer;font-weight:700}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ok{background:var(--ok);color:#fff}.btn.bad{background:var(--bad);color:#fff}
+.btn.sm{padding:5px 11px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+.intro{padding:34px 0 18px}
+.intro h1{font-size:30px;max-width:560px;color:var(--purple)}
+.intro p{color:var(--mute);margin:8px 0 0;max-width:520px}
+.filters{display:grid;grid-template-columns:2fr 1.4fr 1.2fr 1.2fr 1.2fr;gap:10px;background:var(--card);padding:14px;border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.filters input,.filters select,.field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--soft)}
+.row-tools{display:flex;justify-content:space-between;align-items:center;margin:18px 0 12px;color:var(--mute)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:16px}
+.book{background:var(--card);border:1px solid var(--line);border-radius:6px 14px 14px 6px;box-shadow:var(--shadow);display:flex;flex-direction:column;border-left:10px solid var(--spine,var(--brand));padding:16px 16px 14px}
+.book h3{font-size:17px;margin-bottom:4px}
+.book .au{color:var(--mute);font-size:14px;min-height:21px}
+.book .meta{font-size:12.5px;color:var(--mute);margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;display:flex;justify-content:space-between;gap:8px}
+.book .foot{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--mute);margin-bottom:8px}
+.avail{font-weight:700;font-size:13px}.avail.y{color:var(--ok)}.avail.n{color:var(--bad)}
+.acts{display:flex;gap:6px}
+
+.pager{display:flex;justify-content:center;align-items:center;gap:14px;margin:26px 0 44px;color:var(--mute)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:6px 0;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
+th{color:var(--mute);font-weight:500;font-size:13px}
+tr:last-child td{border-bottom:0}
+.st{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--soft)}
+.st.Pending{color:var(--warn)}.st.Approved{color:var(--purple)}.st.Returned{color:var(--ok)}.st.Rejected{color:var(--bad)}
+.late{color:var(--bad);font-weight:700}
+.empty{padding:34px;text-align:center;color:var(--mute)}
+.page-title{padding:30px 0 14px}.page-title h2{font-size:24px}
+.sub{margin:26px 0 10px;font-size:18px}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tabs button{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:7px 16px;cursor:pointer}
+.tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font:700 26px "Noto Serif Georgian",serif}.stat span{color:var(--mute);font-size:13px}
+.bar-row{display:grid;grid-template-columns:200px 1fr 36px;gap:12px;align-items:center;padding:8px 16px;font-size:14px}
+.bar-row div{height:10px;border-radius:5px;background:var(--soft);overflow:hidden}.bar-row div i{display:block;height:100%;background:linear-gradient(90deg,var(--purple),var(--brand));border-radius:5px}
+
+.modal{position:fixed;inset:0;background:rgba(10,14,28,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.box{background:var(--card);border-radius:16px;padding:26px;width:100%;max-width:460px;max-height:92vh;overflow:auto}
+.box h2{font-size:22px;margin-bottom:16px}
+.field.bad input,.field.bad select{border-color:var(--bad)}.field.bad .chips{outline:1px solid var(--bad);outline-offset:3px;border-radius:8px}.err{color:var(--bad);font-size:12.5px;margin-top:5px}
+.field{margin-bottom:12px}.field label{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;max-height:130px;overflow:auto}
+.chips label{display:flex;align-items:center;gap:6px;font-size:13px;background:var(--soft);padding:4px 10px;border-radius:99px;color:var(--ink);margin:0;cursor:pointer}
+.mini{background:none;border:0;color:var(--purple);cursor:pointer;font-size:13px;padding:0 0 0 6px}
+.form-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.switch{color:var(--mute);font-size:14px;margin-top:14px;text-align:center}.switch a{color:var(--purple);cursor:pointer}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;gap:8px;align-items:center}
+.t{background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-size:14px;max-width:90vw;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.t.err{background:var(--bad);color:#fff}
+
+@media(max-width:820px){.filters{grid-template-columns:1fr 1fr}.filters input:first-child{grid-column:1/-1}.bar-row{grid-template-columns:110px 1fr 30px}}
+@media(prefers-reduced-motion:no-preference){.t{animation:pop .2s ease}@keyframes pop{from{transform:translateY(8px);opacity:0}}}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <div class="logo"><i></i>ბიბლიოთეკა</div>
+  <nav id="nav"></nav>
+  <div class="who" id="who"></div>
+</div></header>
+
+<main class="wrap">
+  <section id="v-catalog">
+    <div class="intro">
+      <h1>იპოვეთ წიგნი და ითხოვეთ ონლაინ</h1>
+      <p>მოძებნე სათაურით, ავტორით, კატეგორიით ან ISBN-ით. მოთხოვნას ბიბლიოთეკარი დაადასტურებს.</p>
+    </div>
+    <div class="filters">
+      <input id="fTitle" placeholder="სათაური" aria-label="სათაური">
+      <input id="fAuthor" placeholder="ავტორი" aria-label="ავტორი">
+      <select id="fCat" aria-label="კატეგორია"><option value="">ყველა კატეგორია</option></select>
+      <input id="fIsbn" placeholder="ISBN" aria-label="ISBN">
+      <select id="fSort" aria-label="დალაგება">
+        <option value="title">სათაური ↑</option><option value="title:d">სათაური ↓</option>
+        <option value="available:d">მეტი მარაგი</option><option value="category">კატეგორია</option>
+      </select>
+    </div>
+    <div class="row-tools"><span id="count"></span><button class="btn sm" data-act="newBook" id="addBook" hidden>+ ახალი წიგნი</button></div>
+    <div id="books" class="grid"></div>
+    <div class="pager" id="pager"></div>
+  </section>
+
+  <section id="v-my" hidden>
+    <div class="page-title"><h2>ჩემი გატანები</h2></div>
+    <div class="panel" id="myList"></div>
+    <h3 class="sub">ვადაგადაცილებული</h3>
+    <div class="panel" id="myOver"></div>
+  </section>
+
+  <section id="v-admin" hidden>
+    <div class="page-title"><h2>ადმინ პანელი</h2></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="adminBody"></div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden><div class="box" id="box"></div></div>
+<div id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const st = { user: JSON.parse(localStorage.getItem('lib_user') || 'null'), token: localStorage.getItem('lib_token'),
+             view: 'catalog', tab: 'Pending', page: 1, cats: [], authors: [], books: [] };
+const STATUS = { Pending: 'მოლოდინში', Approved: 'გაცემული', Rejected: 'უარყოფილი', Returned: 'დაბრუნებული' };
+const SPINES = ['#e8751a', '#7a4fc2', '#1f8a5b', '#c2417a', '#d9a21f', '#2a8a9a'];
+const fmt = d => d ? new Date(d).toLocaleDateString('ka-GE') : '—';
+const isAdmin = () => st.user?.role === 'Admin';
+
+// API: ტოკენი, JSON, ProblemDetails შეტყობინება
+async function api(path, method = 'GET', body) {
+  const res = await fetch('/api' + path, {
+    method,
+    headers: { 'Content-Type': 'application/json', ...(st.token ? { Authorization: 'Bearer ' + st.token } : {}) },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (res.status === 204) return null;
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) {
+    if (res.status === 401 && st.token) logout();
+    const msg = data?.errors ? Object.values(data.errors).flat().join(' • ')
+      : data?.detail || data?.title || (res.status === 403 ? 'წვდომა აკრძალულია' : res.status === 401 ? 'გაიარეთ ავტორიზაცია' : 'შეცდომა ' + res.status);
+    const err = new Error(msg); err.fields = data?.errors; err.status = res.status; throw err;
+  }
+  return data;
+}
+
+function toast(msg, err) {
+  const t = document.createElement('div');
+  t.className = 't' + (err ? ' err' : ''); t.textContent = msg;
+  $('#toast').append(t); setTimeout(() => t.remove(), 3800);
+}
+
+// ნავიგაცია
+function renderNav() {
+  const items = [['catalog', 'კატალოგი']];
+  if (st.user) items.push(['my', 'ჩემი გატანები']);
+  if (isAdmin()) items.push(['admin', 'ადმინ პანელი']);
+  $('#nav').innerHTML = items.map(([k, t]) => `<button class="${st.view === k ? 'on' : ''}" data-act="go" data-v="${k}">${t}</button>`).join('');
+  $('#who').innerHTML = st.user
+    ? `<span>${esc(st.user.userName)}</span><button class="btn ghost sm" data-act="logout">გასვლა</button>`
+    : `<button class="btn sm" data-act="auth">შესვლა</button>`;
+  $('#addBook').hidden = !isAdmin();
+}
+
+function go(v) {
+  st.view = v;
+  for (const k of ['catalog', 'my', 'admin']) $('#v-' + k).hidden = k !== v;
+  renderNav();
+  Promise.resolve(({ catalog: loadBooks, my: loadMy, admin: () => loadAdmin(st.tab) })[v]()).catch(x => toast(x.message, true));
+}
+
+function setUser(r) {
+  st.user = { userName: r.userName, email: r.email, role: r.role }; st.token = r.token;
+  localStorage.setItem('lib_user', JSON.stringify(st.user)); localStorage.setItem('lib_token', r.token);
+}
+function logout() {
+  st.user = null; st.token = null; localStorage.removeItem('lib_user'); localStorage.removeItem('lib_token');
+  go('catalog');
+}
+
+// მოდალი
+function modal(html) { $('#box').innerHTML = html; $('#modal').hidden = false; $('#box input')?.focus(); }
+function closeModal() { $('#modal').hidden = true; }
+$('#modal').addEventListener('mousedown', e => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function authModal(mode = 'login') {
+  const reg = mode === 'register';
+  modal(`<h2>${reg ? 'რეგისტრაცია' : 'შესვლა'}</h2>
+  <form id="authForm" data-mode="${mode}" novalidate>
+    ${reg ? '<div class="field"><label>მომხმარებლის სახელი</label><input name="userName" required minlength="3"></div>' : ''}
+    <div class="field"><label>Email</label><input name="email" type="email" required></div>
+    <div class="field"><label>პაროლი</label><input name="password" type="password" required minlength="${reg ? 6 : 1}"></div>
+    <div class="form-foot"><button type="button" class="btn ghost" data-act="close">გაუქმება</button><button class="btn">${reg ? 'რეგისტრაცია' : 'შესვლა'}</button></div>
+  </form>
+  <div class="switch">${reg ? 'უკვე გაქვთ ანგარიში?' : 'ანგარიში არ გაქვთ?'} <a data-act="auth" data-mode="${reg ? 'login' : 'register'}">${reg ? 'შესვლა' : 'რეგისტრაცია'}</a></div>`);
+}
+
+// კატალოგი
+async function loadLookups() {
+  [st.cats, st.authors] = await Promise.all([api('/categories'), api('/authors')]);
+  const cur = $('#fCat').value;
+  $('#fCat').innerHTML = '<option value="">ყველა კატეგორია</option>' + st.cats.map(c => `<option>${esc(c.name)}</option>`).join('');
+  $('#fCat').value = cur;
+}
+
+async function loadBooks() {
+  const [sortBy, d] = $('#fSort').value.split(':');
+  const p = new URLSearchParams({ Title: $('#fTitle').value, Author: $('#fAuthor').value, Category: $('#fCat').value,
+    ISBN: $('#fIsbn').value, SortBy: sortBy, Desc: d === 'd', Page: st.page, PageSize: 8 });
+  const r = await api('/books?' + p);
+  st.books = r.items;
+  $('#count').textContent = `ნაპოვნია ${r.totalCount} წიგნი`;
+  $('#books').innerHTML = r.items.length ? r.items.map(bookCard).join('') : '<div class="empty" style="grid-column:1/-1">წიგნი ვერ მოიძებნა. სცადეთ სხვა საძიებო სიტყვა.</div>';
+  $('#pager').innerHTML = r.totalPages > 1
+    ? `<button class="btn ghost sm" data-act="page" data-p="${r.page - 1}" ${r.page <= 1 ? 'disabled' : ''}>წინა</button>
+       <span>${r.page} / ${r.totalPages}</span>
+       <button class="btn ghost sm" data-act="page" data-p="${r.page + 1}" ${r.page >= r.totalPages ? 'disabled' : ''}>შემდეგი</button>` : '';
+}
+
+function bookCard(b) {
+  const ok = b.availableCopies > 0;
+  const action = isAdmin()
+    ? `<div class="acts"><button class="btn ghost sm" data-act="editBook" data-id="${b.id}">შეცვლა</button><button class="btn ghost sm" data-act="delBook" data-id="${b.id}">წაშლა</button></div>`
+    : `<button class="btn sm" data-act="borrow" data-id="${b.id}">ითხოვეთ</button>`;
+  return `<article class="book" style="--spine:${SPINES[b.categoryId % SPINES.length]}">
+    <span class="tag">${esc(b.category)}</span>
+    <h3>${esc(b.title)}</h3>
+    <div class="au">${esc(b.authors.join(', '))}</div>
+    <div class="meta"><span>ISBN ${esc(b.isbn)}</span></div>
+    <div class="foot"><span class="avail ${ok ? 'y' : 'n'}">${ok ? `${b.availableCopies} / ${b.totalCopies} ხელმისაწვდომია` : 'მარაგი ამოიწურა'}</span>${action}</div>
+  </article>`;
+}
+
+// წიგნის დამატება / შეცვლა
+function bookModal(b) {
+  modal(`<h2>${b ? 'წიგნის შეცვლა' : 'ახალი წიგნი'}</h2>
+  <form id="bookForm" data-id="${b?.id ?? ''}" novalidate>
+    <div class="field"><label>სათაური</label><input name="title" required maxlength="200" value="${esc(b?.title)}"></div>
+    <div class="field"><label>ISBN (10 ან 13 ციფრი)</label><input name="isbn" required pattern="\\d{10}(\\d{3})?" value="${esc(b?.isbn)}"></div>
+    <div class="field"><label>კატეგორია <button type="button" class="mini" data-act="newCat">+ ახალი</button></label>
+      <select name="categoryId" required>${st.cats.map(c => `<option value="${c.id}" ${b?.categoryId === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>ეგზემპლართა რაოდენობა</label><input name="totalCopies" type="number" min="1" max="10000" required value="${b?.totalCopies ?? 1}"></div>
+    <div class="field"><label>ავტორები <button type="button" class="mini" data-act="newAuthor">+ ახალი</button></label>
+      <div class="chips">${st.authors.map(a => `<label><input type="checkbox" name="au" value="${a.id}" ${b?.authorIds.includes(a.id) ? 'checked' : ''}>${esc(a.fullName)}</label>`).join('')}</div></div>
+    <div class="form-foot"><button type="button" class="btn ghost" data-act="close">გაუქმება</button><button class="btn">შენახვა</button></div>
+  </form>`);
+}
+
+// გატანების ცხრილი
+function borrowTable(rows, { showUser, canApprove }) {
+  if (!rows.length) return '<div class="empty">ჩანაწერები ჯერ არ არის.</div>';
+  return `<table><thead><tr>${showUser ? '<th>მომხმარებელი</th>' : ''}<th>წიგნი</th><th>სტატუსი</th><th>ვადა</th><th>ჯარიმა</th><th></th></tr></thead><tbody>
+  ${rows.map(r => `<tr>${showUser ? `<td>${esc(r.userName)}</td>` : ''}
+    <td>${esc(r.bookTitle)}</td>
+    <td><span class="st ${r.status}">${STATUS[r.status]}</span></td>
+    <td class="${r.isOverdue ? 'late' : ''}">${r.status === 'Returned' ? 'დაბრუნდა ' + fmt(r.returnDate) : fmt(r.dueDate)}</td>
+    <td class="${r.fineAmount > 0 ? 'late' : ''}">${r.fineAmount > 0 ? r.fineAmount.toFixed(2) + ' ₾' : '—'}</td>
+    <td><div class="acts">
+      ${canApprove && r.status === 'Pending' ? `<button class="btn ok sm" data-act="approve" data-id="${r.id}">დადასტურება</button><button class="btn bad sm" data-act="reject" data-id="${r.id}">უარყოფა</button>` : ''}
+      ${r.status === 'Approved' ? `<button class="btn ghost sm" data-act="return" data-id="${r.id}">დაბრუნება</button>` : ''}
+    </div></td></tr>`).join('')}</tbody></table>`;
+}
+
+async function loadMy() {
+  const [mine, over] = await Promise.all([api('/borrows/my'), api('/borrows/overdue')]);
+  $('#myList').innerHTML = borrowTable(mine, {});
+  $('#myOver').innerHTML = borrowTable(over, {});
+}
+
+// ადმინ პანელი
+const TABS = [['Pending', 'მოთხოვნები'], ['Approved', 'გაცემული'], ['overdue', 'ვადაგადაცილებული'], ['All', 'ყველა'], ['stats', 'ანალიტიკა']];
+async function loadAdmin(tab) {
+  st.tab = tab;
+  $('#tabs').innerHTML = TABS.map(([k, t]) => `<button class="${k === tab ? 'on' : ''}" data-act="tab" data-t="${k}">${t}</button>`).join('');
+  const body = $('#adminBody');
+  if (tab === 'stats') {
+    const [s, pop] = await Promise.all([api('/stats/summary'), api('/stats/popular-books?top=5')]);
+    const max = Math.max(1, ...pop.map(p => p.borrowCount));
+    body.innerHTML = `<div class="stats">
+      <div class="stat"><b>${s.books}</b><span>წიგნი</span></div><div class="stat"><b>${s.users}</b><span>მომხმარებელი</span></div>
+      <div class="stat"><b>${s.byStatus.Pending ?? 0}</b><span>მოლოდინში</span></div><div class="stat"><b>${s.byStatus.Approved ?? 0}</b><span>გაცემული</span></div>
+      <div class="stat"><b>${s.overdue}</b><span>ვადაგადაცილებული</span></div></div>
+      <h3 class="sub">პოპულარული წიგნები</h3><div class="panel">${pop.length ? pop.map(p =>
+        `<div class="bar-row"><span>${esc(p.title)}</span><div><i style="width:${p.borrowCount / max * 100}%"></i></div><b>${p.borrowCount}</b></div>`).join('') : '<div class="empty">მონაცემები ჯერ არ არის.</div>'}</div>`;
+    return;
+  }
+  const rows = tab === 'overdue' ? await api('/borrows/overdue') : await api('/borrows' + (tab === 'All' ? '' : '?status=' + tab));
+  body.innerHTML = `<div class="panel">${borrowTable(rows, { showUser: true, canApprove: true })}</div>`;
+}
+
+// მოქმედებები (event delegation)
+const refresh = () => ({ catalog: loadBooks, my: loadMy, admin: () => loadAdmin(st.tab) })[st.view]();
+const acts = {
+  go: b => go(b.dataset.v),
+  auth: b => authModal(b.dataset.mode),
+  close: closeModal,
+  logout,
+  page: b => { st.page = +b.dataset.p; loadBooks(); },
+  tab: b => loadAdmin(b.dataset.t),
+  newBook: () => bookModal(null),
+  editBook: b => bookModal(st.books.find(x => x.id == b.dataset.id)),
+  delBook: async b => {
+    if (!confirm('წავშალო წიგნი?')) return;
+    await api('/books/' + b.dataset.id, 'DELETE'); toast('წიგნი წაიშალა'); loadBooks();
+  },
+  borrow: async b => {
+    if (!st.user) return authModal();
+    await api('/borrows', 'POST', { bookId: +b.dataset.id }); toast('მოთხოვნა გაიგზავნა, ელოდეთ დადასტურებას');
+  },
+  approve: async b => { await api(`/borrows/${b.dataset.id}/approve`, 'PATCH'); toast('მოთხოვნა დადასტურდა'); refresh(); },
+  reject: async b => { await api(`/borrows/${b.dataset.id}/reject`, 'PATCH'); toast('მოთხოვნა უარყოფილია'); refresh(); },
+  return: async b => { await api(`/borrows/${b.dataset.id}/return`, 'PATCH'); toast('წიგნი დაბრუნებულია'); refresh(); },
+  newCat: async () => {
+    const name = prompt('კატეგორიის სახელი'); if (!name) return;
+    await api('/categories', 'POST', { name }); await loadLookups(); toast('კატეგორია დაემატა'); reopenForm();
+  },
+  newAuthor: async () => {
+    const name = prompt('ავტორის სახელი'); if (!name) return;
+    await api('/authors', 'POST', { name }); await loadLookups(); toast('ავტორი დაემატა'); reopenForm();
+  }
+};
+
+// ახალი კატეგორიის/ავტორის შემდეგ ფორმა ახლდება შეყვანილი მონაცემებით
+function reopenForm() {
+  const f = $('#bookForm'); const d = Object.fromEntries(new FormData(f));
+  const au = [...f.querySelectorAll('[name=au]:checked')].map(x => +x.value);
+  bookModal({ id: f.dataset.id || undefined, title: d.title, isbn: d.isbn, categoryId: +d.categoryId, totalCopies: +d.totalCopies, authorIds: au });
+}
+
+// ვალიდაცია: შეტყობინება ველის ქვემოთ
+function setErr(el, msg) {
+  const box = el.closest('.field'); if (!box) return;
+  box.classList.toggle('bad', !!msg);
+  let e = box.querySelector('.err');
+  if (!msg) { e?.remove(); return; }
+  if (!e) { e = document.createElement('div'); e.className = 'err'; box.append(e); }
+  e.textContent = msg;
+}
+
+function validate(f) {
+  let ok = true, first = null;
+  f.querySelectorAll('input[name]:not([type=checkbox]),select[name]').forEach(el => {
+    const v = el.value.trim(); let m = '';
+    if (el.required && !v) m = 'ველი სავალდებულოა';
+    else if (v && el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) m = 'შეიყვანეთ სწორი Email, მაგ. name@mail.com';
+    else if (v && el.minLength > 0 && v.length < el.minLength) m = `მინიმუმ ${el.minLength} სიმბოლო`;
+    else if (v && el.pattern && !new RegExp('^(?:' + el.pattern + ')$').test(v)) m = 'ISBN უნდა შედგებოდეს 10 ან 13 ციფრისგან';
+    else if (v && el.type === 'number' && (+v < +el.min || +v > +el.max)) m = `მნიშვნელობა უნდა იყოს ${el.min}-დან ${el.max}-მდე`;
+    setErr(el, m);
+    if (m) { ok = false; first ??= el; }
+  });
+  const chips = f.querySelector('.chips');
+  if (chips) { const none = !chips.querySelector(':checked'); setErr(chips, none ? 'აირჩიეთ მინიმუმ ერთი ავტორი' : ''); if (none) ok = false; }
+  first?.focus();
+  return ok;
+}
+
+// სერვერის შეცდომა ველის ქვემოთ, სხვა შემთხვევაში Toast
+function serverErr(f, x) {
+  const names = { username: 'userName', email: 'email', password: 'password', title: 'title', isbn: 'isbn', categoryid: 'categoryId', totalcopies: 'totalCopies', authorids: 'au' };
+  const field = n => f.querySelector(`[name=${n}]`);
+  let shown = false;
+  for (const [k, msgs] of Object.entries(x.fields || {})) {
+    const el = field(names[k.toLowerCase()]);
+    if (el) { setErr(el, msgs[0]); shown = true; }
+  }
+  if (!shown && f.id === 'authForm' && x.status === 401) { setErr(field('password'), x.message); shown = true; }
+  if (!shown && f.id === 'authForm' && x.status === 409) { setErr(field(x.message.includes('Email') ? 'email' : 'userName'), x.message); shown = true; }
+  if (!shown && f.id === 'bookForm' && x.status === 409) { setErr(field('isbn'), x.message); shown = true; }
+  if (!shown) toast(x.message, true);
+}
+
+document.addEventListener('input', e => { if (e.target.closest('.field')) setErr(e.target, ''); });
+
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  try { await acts[b.dataset.act](b); } catch (x) { toast(x.message, true); }
+});
+
+document.addEventListener('submit', async e => {
+  e.preventDefault(); const f = e.target;
+  if (!validate(f)) return;
+  try {
+    if (f.id === 'authForm') {
+      const reg = f.dataset.mode === 'register';
+      const r = await api('/auth/' + (reg ? 'register' : 'login'), 'POST', Object.fromEntries(new FormData(f)));
+      setUser(r); closeModal(); toast('მოგესალმებით, ' + r.userName); go(st.view);
+    } else if (f.id === 'bookForm') {
+      const d = Object.fromEntries(new FormData(f));
+      const body = { title: d.title, isbn: d.isbn, categoryId: +d.categoryId, totalCopies: +d.totalCopies,
+        authorIds: [...f.querySelectorAll('[name=au]:checked')].map(x => +x.value) };
+      await api('/books' + (f.dataset.id ? '/' + f.dataset.id : ''), f.dataset.id ? 'PUT' : 'POST', body);
+      closeModal(); toast('წიგნი შენახულია'); loadBooks();
+    }
+  } catch (x) { serverErr(f, x); }
+});
+
+// ფილტრები: debounce
+let timer;
+['#fTitle', '#fAuthor', '#fIsbn'].forEach(s => $(s).addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { st.page = 1; loadBooks().catch(x => toast(x.message, true)); }, 300); }));
+['#fCat', '#fSort'].forEach(s => $(s).addEventListener('change', () => { st.page = 1; loadBooks().catch(x => toast(x.message, true)); }));
+
+(async () => { try { await loadLookups(); } catch (x) { toast(x.message, true); } go('catalog'); })();
+</script>
+</body>
+</html>
